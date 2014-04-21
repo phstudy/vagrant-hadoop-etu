@@ -57,7 +57,7 @@ for i in hadoop-yarn-resourcemanager hadoop-yarn-nodemanager hadoop-mapreduce-hi
 su - hdfs -s /bin/bash -c "hadoop fs -chmod 777 /tmp/hadoop-yarn/staging"
 
 ## run mapreduce for function test
-hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 2 2 # (this will fail, due to classpath?)
+su - hdfs hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 2 2
 
 ## run HDFS test case
 dd if=/dev/zero of=100mb.img bs=1M count=100
@@ -86,7 +86,7 @@ fltrd = FILTER cntd BY cnt > 50;
 srtd = ORDER fltrd BY cnt;
 STORE srtd INTO '/tmp/pig_output';
 EOF
-pig /tmp/pig_test.pig # (this will fail)
+su - hdfs pig /tmp/pig_test.pig
 
 ## run hive test case
 wget http://seanlahman.com/files/database/lahman2012-csv.zip -O /tmp/lahman2012-csv.zip
