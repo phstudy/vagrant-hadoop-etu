@@ -1,16 +1,33 @@
 #!/bin/bash
 
+## datasets
+#excite_small_dataset_url=http://www.hadoop.tw/excite-small.log
+#lahman2012_csv_dataset_url=http://seanlahman.com/files/database/lahman2012-csv.zip
+excite_small_dataset_url=http://hadoop-etu.s3.amazonaws.com/dataset/excite-small.log
+lahman2012_csv_dataset_url=http://seanlahman.com/files/database/lahman2012-csv.zip
+
+
 ## update repository (may not required.)
 # yum update
 
 ## install wget
-yum install -y wget
+#yum install -y wget
 
 ## add bigtop repo
-wget -O /etc/yum.repos.d/bigtop.repo http://archive.apache.org/dist/bigtop/stable/repos/centos6/bigtop.repo
+#wget -O /etc/yum.repos.d/bigtop.repo http://archive.apache.org/dist/bigtop/stable/repos/centos6/bigtop.repo
 
 ## install hadoop related packages
-yum install -y java-1.7.0-openjdk vim bigtop-utils hadoop-conf-pseudo w3m hive pig hbase hive-hbase hbase-master hbase-regionserver hbase-rest hbase-thrift zookeeper unzip
+#yum install -y java-1.7.0-openjdk vim bigtop-utils hadoop-conf-pseudo w3m hive pig hbase hive-hbase hbase-master hbase-regionserver hbase-rest hbase-thrift zookeeper unzip
+
+## download hadoop packages from s3
+cd /opt && { curl -O "http://hadoop-etu.s3.amazonaws.com/iso_hadoop/{wget-1.12-1.11.el6_5.x86_64.rpm,make-3.81-20.el6.x86_64.rpm,openssl-1.0.1e-16.el6_5.7.x86_64.rpm}" ; cd -; }
+rpm -Uvh --replacepkgs /opt/make-3.81-20.el6.x86_64.rpm
+rpm -Uvh --replacepkgs /opt/openssl-1.0.1e-16.el6_5.7.x86_64.rpm
+rpm -Uvh --replacepkgs /opt/wget-1.12-1.11.el6_5.x86_64.rpm
+
+wget http://hadoop-etu.s3.amazonaws.com/iso_hadoop.list -P /opt
+wget -i /opt/iso_hadoop.list -P /opt
+rpm -Uvh --replacepkgs /opt/*.rpm
 
 ## format NameNode
 /etc/init.d/hadoop-hdfs-namenode init
@@ -56,12 +73,12 @@ for i in hadoop-yarn-resourcemanager hadoop-yarn-nodemanager hadoop-mapreduce-hi
 #  user=root, access=EXECUTE, inode="/tmp/hadoop-yarn/staging":mapred:mapred:drwxrwx---
 su - hdfs -s /bin/bash -c "hadoop fs -chmod 777 /tmp/hadoop-yarn/staging"
 
-## run mapreduce for function test
-su - hdfs hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 2 2
-
 ## run HDFS test case
 dd if=/dev/zero of=100mb.img bs=1M count=100
 hadoop fs -put 100mb.img test.img
+
+## run mapreduce for function test
+su - hdfs hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 2 2
 
 ## run hbase test case
 cat > /tmp/hbase_test << EOF
@@ -76,7 +93,7 @@ EOF
 hbase shell /tmp/hbase_test
 
 ## run pig test case
-wget http://www.hadoop.tw/excite-small.log -O /tmp/excite-small.log
+wget $excite_small_dataset_url -O /tmp/excite-small.log
 hadoop fs -put /tmp/excite-small.log /tmp/excite-small.log
 cat > /tmp/pig_test.pig << EOF
 log = LOAD '/tmp/excite-small.log' AS (user, timestamp, query);
@@ -89,7 +106,7 @@ EOF
 su - hdfs pig /tmp/pig_test.pig
 
 ## run hive test case
-wget http://seanlahman.com/files/database/lahman2012-csv.zip -O /tmp/lahman2012-csv.zip
+wget $lahman2012_csv_dataset_url -O /tmp/lahman2012-csv.zip
 ( cd /tmp; unzip /tmp/lahman2012-csv.zip )
 cat > /tmp/hive_test.hql << EOF
 create database baseball;
@@ -108,3 +125,5 @@ select * from baseball.master LIMIT 10;
 quit;
 EOF
 hive -f /tmp/hive_test.hql
+
+exit 0

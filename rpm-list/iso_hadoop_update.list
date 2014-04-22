@@ -159,6 +159,8 @@ http://hadoop-etu.s3.amazonaws.com/iso_hadoop_update/kernel-headers-2.6.32-431.1
 http://hadoop-etu.s3.amazonaws.com/iso_hadoop_update/kernel-firmware-2.6.32-431.11.2.el6.noarch.rpm
 http://hadoop-etu.s3.amazonaws.com/iso_hadoop_update/kernel-2.6.32-431.11.2.el6.x86_64.rpm
 http://hadoop-etu.s3.amazonaws.com/iso_hadoop_update/jpackage-utils-1.7.5-3.12.el6.noarch.rpm
+http://hadoop-etu.s3.amazonaws.com/iso_hadoop_update/java-1.7.0-openjdk-1.7.0.55-2.4.7.1.el6_5.x86_64.rpm
+http://hadoop-etu.s3.amazonaws.com/iso_hadoop_update/java-1.7.0-openjdk-devel-1.7.0.55-2.4.7.1.el6_5.x86_64.rpm
 http://hadoop-etu.s3.amazonaws.com/iso_hadoop_update/jasper-libs-1.900.1-15.el6_1.1.x86_64.rpm
 http://hadoop-etu.s3.amazonaws.com/iso_hadoop_update/iso-codes-3.16-2.el6.noarch.rpm
 http://hadoop-etu.s3.amazonaws.com/iso_hadoop_update/iscsi-initiator-utils-6.2.0.873-10.el6.x86_64.rpm
