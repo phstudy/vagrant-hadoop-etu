@@ -4,8 +4,10 @@
 #excite_small_dataset_url=http://www.hadoop.tw/excite-small.log
 #lahman2012_csv_dataset_url=http://seanlahman.com/files/database/lahman2012-csv.zip
 excite_small_dataset_url=http://hadoop-etu.s3.amazonaws.com/dataset/excite-small.log
-lahman2012_csv_dataset_url=http://seanlahman.com/files/database/lahman2012-csv.zip
+lahman2012_csv_dataset_url=http://hadoop-etu.s3.amazonaws.com/dataset/lahman2012-csv.zip
 
+## non-root user
+user=nutn
 
 ## update repository (may not required.)
 # yum update
@@ -71,14 +73,28 @@ for i in hadoop-yarn-resourcemanager hadoop-yarn-nodemanager hadoop-mapreduce-hi
 # ERROR security.UserGroupInformation: PriviledgedActionException as:root (auth:SIMPLE) 
 #  cause:org.apache.hadoop.security.AccessControlException: Permission denied: 
 #  user=root, access=EXECUTE, inode="/tmp/hadoop-yarn/staging":mapred:mapred:drwxrwx---
-su - hdfs -s /bin/bash -c "hadoop fs -chmod 777 /tmp/hadoop-yarn/staging"
+su -s /bin/bash hdfs -c "hadoop fs -chmod 777 /tmp/hadoop-yarn/staging"
+
+
+## add non-root user to sudoer
+useradd -G hdfs,mapred,hadoop $user
+cat > /etc/sudoers.d/$user << EOF
+$user ALL=(ALL) NOPASSWD: ALL
+EOF
+
+cd /home/nutn
+
+## create non-root user home directory in HDFS
+su -s /bin/bash hdfs -c "hadoop fs -mkdir /user/$user"
+su -s /bin/bash hdfs -c "hadoop fs -chmod -R 777 /user/$user"
+su -s /bin/bash hdfs -c "hadoop fs -chown $user /user/$user"
 
 ## run HDFS test case
 dd if=/dev/zero of=100mb.img bs=1M count=100
-hadoop fs -put 100mb.img test.img
+su -s /bin/bash $user -c "hadoop fs -put 100mb.img test.img"
 
 ## run mapreduce for function test
-su - hdfs hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 2 2
+su -s /bin/bash $user -c "hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 2 2"
 
 ## run hbase test case
 cat > /tmp/hbase_test << EOF
@@ -90,11 +106,11 @@ put 't1','r1','f1:c2','v3'
 scan 't1'
 exit
 EOF
-hbase shell /tmp/hbase_test
+su -s /bin/bash $user -c "hbase shell /tmp/hbase_test"
 
 ## run pig test case
 wget $excite_small_dataset_url -O /tmp/excite-small.log
-hadoop fs -put /tmp/excite-small.log /tmp/excite-small.log
+su - $user -s /bin/bash -c "hadoop fs -put /tmp/excite-small.log /tmp/excite-small.log"
 cat > /tmp/pig_test.pig << EOF
 log = LOAD '/tmp/excite-small.log' AS (user, timestamp, query);
 grpd = GROUP log BY user;  
@@ -103,7 +119,7 @@ fltrd = FILTER cntd BY cnt > 50;
 srtd = ORDER fltrd BY cnt;
 STORE srtd INTO '/tmp/pig_output';
 EOF
-su - hdfs pig /tmp/pig_test.pig
+su -s /bin/bash $user -c "pig /tmp/pig_test.pig"
 
 ## run hive test case
 wget $lahman2012_csv_dataset_url -O /tmp/lahman2012-csv.zip
@@ -124,6 +140,6 @@ LOAD DATA LOCAL INPATH "/tmp/Master.csv" OVERWRITE INTO TABLE baseball.master;
 select * from baseball.master LIMIT 10;
 quit;
 EOF
-hive -f /tmp/hive_test.hql
+su -s /bin/bash $user -c "hive -f /tmp/hive_test.hql"
 
 exit 0
