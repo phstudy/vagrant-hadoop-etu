@@ -119,7 +119,7 @@ fltrd = FILTER cntd BY cnt > 50;
 srtd = ORDER fltrd BY cnt;
 STORE srtd INTO '/tmp/pig_output';
 EOF
-su -s /bin/bash $user -c "pig /tmp/pig_test.pig"
+su -s /bin/bash $user -c "pig -f /tmp/pig_test.pig"
 
 ## run hive test case
 wget $lahman2012_csv_dataset_url -O /tmp/lahman2012-csv.zip
