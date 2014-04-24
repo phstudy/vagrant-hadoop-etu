@@ -82,7 +82,7 @@ cat > /etc/sudoers.d/$user << EOF
 $user ALL=(ALL) NOPASSWD: ALL
 EOF
 
-cd /home/nutn
+cd /home/$user
 
 ## create non-root user home directory in HDFS
 su -s /bin/bash hdfs -c "hadoop fs -mkdir /user/$user"
