@@ -1,6 +1,0 @@
-[Prerequistive - JDK]
-$ sudo apt-get install openjdk-7-jdk
-$ java –version
-
-[Prerequistive - SSH]
-$ sudo apt-get install openssh-server
