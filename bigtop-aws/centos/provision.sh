@@ -142,4 +142,9 @@ quit;
 EOF
 su -s /bin/bash $user -c "hive -f /tmp/hive_test.hql"
 
+if [ -f /usr/local/bin/send_my_score ]; then
+  echo "send my score"
+  /usr/local/bin/send_my_score
+fi
+
 exit 0

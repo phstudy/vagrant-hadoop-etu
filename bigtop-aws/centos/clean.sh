@@ -2,6 +2,8 @@
 
 user=nutn
 
+cd /home/$user
+
 ## clean HDFS
 su -s /bin/bash $user -c "hadoop fs -rm test.img"
 
