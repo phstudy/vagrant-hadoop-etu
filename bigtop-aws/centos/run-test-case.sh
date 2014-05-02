@@ -12,8 +12,10 @@ user=nutn
 cd /home/$user
 
 ## run HDFS test case
-dd if=/dev/zero of=100mb.img bs=1M count=100
-su -s /bin/bash $user -c "hadoop fs -put 100mb.img test.img"
+dd if=/dev/zero of=/tmp/100mb.img bs=1M count=100
+su -s /bin/bash $user -c "hadoop fs -put /tmp/100mb.img test.img"
+su -s /bin/bash root -c "hadoop fs -put /tmp/100mb.img test.img"
+su -s /bin/bash hdfs -c "hadoop fs -put /tmp/100mb.img test.img"
 
 ## run mapreduce for function test
 su -s /bin/bash $user -c "hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 2 2"
