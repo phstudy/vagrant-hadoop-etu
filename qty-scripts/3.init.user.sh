@@ -31,16 +31,3 @@ chmod -R 600 /home/hbase/.ssh/*
 chmod 700 /home/hbase/.ssh
 
 su - hdfs -c "hdfs namenode -format"
-su - hdfs -c "hadoop fs -mkdir -p /user/hdfs"
-
-su - hdfs -c "hadoop fs -mkdir -p /hbase"
-su - hdfs -c "hadoop fs -chown hbase /hbase"
-
-su - hdfs -c "hadoop fs -mkdir -p /tmp"
-su - hdfs -c "hadoop fs -chmod 1777 /tmp"
-
-su - hdfs -c "hadoop fs -mkdir -p /user/nutn"
-su - hdfs -c "hadoop fs -chown nutn /user/nutn"
-
-su - hdfs -c "hadoop fs -mkdir -p /user/hive"
-su - hdfs -c "hadoop fs -chown hive /user/hive"
