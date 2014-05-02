@@ -13,23 +13,23 @@ user=nutn
 # yum update
 
 ## install wget
-#yum install -y wget
+yum install -y wget
 
 ## add bigtop repo
-#wget -O /etc/yum.repos.d/bigtop.repo http://archive.apache.org/dist/bigtop/stable/repos/centos6/bigtop.repo
+wget -O /etc/yum.repos.d/bigtop.repo http://archive.apache.org/dist/bigtop/stable/repos/centos6/bigtop.repo
 
 ## install hadoop related packages
-#yum install -y java-1.7.0-openjdk-devel vim bigtop-utils hadoop-conf-pseudo w3m hive pig hbase hive-hbase hbase-master hbase-regionserver hbase-rest hbase-thrift zookeeper unzip
+yum install -y java-1.7.0-openjdk-devel vim bigtop-utils hadoop-conf-pseudo w3m hive pig hbase hive-hbase hbase-master hbase-regionserver hbase-rest hbase-thrift zookeeper unzip
 
 ## download hadoop packages from s3
-cd /opt && { curl -O "http://hadoop-etu.s3.amazonaws.com/iso_hadoop/{wget-1.12-1.11.el6_5.x86_64.rpm,make-3.81-20.el6.x86_64.rpm,openssl-1.0.1e-16.el6_5.7.x86_64.rpm}" ; cd -; }
-rpm -Uvh --replacepkgs /opt/make-3.81-20.el6.x86_64.rpm
-rpm -Uvh --replacepkgs /opt/openssl-1.0.1e-16.el6_5.7.x86_64.rpm
-rpm -Uvh --replacepkgs /opt/wget-1.12-1.11.el6_5.x86_64.rpm
+#cd /opt && { curl -O "http://hadoop-etu.s3.amazonaws.com/iso_hadoop/{wget-1.12-1.11.el6_5.x86_64.rpm,make-3.81-20.el6.x86_64.rpm,openssl-1.0.1e-16.el6_5.7.x86_64.rpm}" ; cd -; }
+#rpm -Uvh --replacepkgs /opt/make-3.81-20.el6.x86_64.rpm
+#rpm -Uvh --replacepkgs /opt/openssl-1.0.1e-16.el6_5.7.x86_64.rpm
+#rpm -Uvh --replacepkgs /opt/wget-1.12-1.11.el6_5.x86_64.rpm
 
-wget http://hadoop-etu.s3.amazonaws.com/iso_hadoop.list -P /opt
-wget -i /opt/iso_hadoop.list -P /opt
-rpm -Uvh --replacepkgs /opt/*.rpm
+#wget http://hadoop-etu.s3.amazonaws.com/iso_hadoop.list -P /opt
+#wget -i /opt/iso_hadoop.list -P /opt
+#rpm -Uvh --replacepkgs /opt/*.rpm
 
 ## format NameNode
 /etc/init.d/hadoop-hdfs-namenode init
