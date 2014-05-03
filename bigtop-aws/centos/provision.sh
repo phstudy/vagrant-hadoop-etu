@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "127.0.0.1 localhost $(hostname)" > /etc/hosts
+
 ## datasets
 #excite_small_dataset_url=http://www.hadoop.tw/excite-small.log
 #lahman2012_csv_dataset_url=http://seanlahman.com/files/database/lahman2012-csv.zip
