@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-declare -a ips=( '192.168.1.80' '192.168.1.81' '192.168.1.82' '192.168.1.83' '192.168.1.84' )
-declare -a hostnames=( 'nfs' 'hadoop1' 'hadoop2' 'hadoop3' 'hadoop4' )
+master_ip='192.168.1.81'
+master_hostname='hadoop1'
+declare -a ips=( '192.168.1.80' $master_ip '192.168.1.82' '192.168.1.83' '192.168.1.84' )
+declare -a hostnames=( 'nfs' $master_hostname 'hadoop2' 'hadoop3' 'hadoop4' )
 
 usage() {
     echo "usage: `basename $0` [options]"
@@ -9,7 +11,8 @@ usage() {
     echo "       -s, --change-swappiness		change swappiness"
     echo "       -d, --disable-selinux		disable selinux"
     echo "       -i, --disable-iptables		disable iptables"
-    echo "       -p, --permissive-selinux		permissive selinux"
+    echo "       -j, --install-oracle-jdk7		install oracle jdk7"
+    echo "       -n, --setup-ntp		setup ntp"
     echo "       -r, --reboot		reboot"
     echo "       -f, --file {script}		execute script on remote server"
     echo "       -C, --command {cmd}		execute cmd on remote server"
@@ -46,6 +49,22 @@ case "$1" in
 		echo "disable iptables on ${ips[i]}"
 
 		ssh root@${ips[i]} 'bash -s' < disable-iptables.sh
+	done
+	shift;;
+-n|--setup-ntp)
+	for ((i=0;i<${#ips[@]};++i)); do
+		echo "setup ntp on ${ips[i]}"
+
+		ssh root@${ips[i]} 'yum -y install ntp ntpdate ntp-doc && chkconfig ntpd on && service ntpd start && ntpdate pool.ntp.org'
+	done
+	shift;;
+-j|--install-oracle-jdk7)
+	for ((i=0;i<${#ips[@]};++i)); do
+		echo "install oracle jdk7 on ${ips[i]}"
+
+		scp jdk-7u55-linux-x64.rpm root@${ips[i]}:~
+		ssh root@${ips[i]} 'yum -y --nogpgcheck localinstall jdk-7u55-linux-x64.rpm'
+		ssh root@${ips[i]} 'bash -s' < set-java-home.sh
 	done
 	shift;;
 -p|--permissive-selinux)

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 OLD_HOSTNAME="$( hostname )"
-NEW_HOSTNAME="$1"
+NEW_HOSTNAME="${1}"
 declare -a ips=(${2// / })
 declare -a hostnames=(${3// / })
 
@@ -17,13 +17,13 @@ fi
 
 echo "Changing hostname from $OLD_HOSTNAME to $NEW_HOSTNAME..."
 
-hostname "$NEW_HOSTNAME"
-sed -i "s/HOSTNAME=.*/HOSTNAME=$NEW_HOSTNAME/g" /etc/sysconfig/network
+hostname "${NEW_HOSTNAME}.localdomain"
+sed -i "s/HOSTNAME=.*/HOSTNAME=${NEW_HOSTNAME}.localdomain/g" /etc/sysconfig/network
 
 for ((i=0;i<${#ips[@]};++i)); do
-	map="${ips[i]} ${hostnames[i]}"
+	map="${ips[i]} ${hostnames[i]}.localdomain ${hostnames[i]}"
 	echo "set $map into /etc/hosts"
-	grep "$map" /etc/hosts >/dev/hosts  || echo "$map" >> /etc/hosts
+	grep "$map" /etc/hosts > /dev/null || echo "$map" >> /etc/hosts
 done
 
 echo "Done."
