@@ -24,10 +24,10 @@ init_user /home/zookeeper/.bashrc
 init_user /home/hbase/.bashrc
 init_user /home/nutn/.bashrc
 
-rsync -av hcfg/ /opt/etu-hadoop/hbase-0.98.1-hadoop2/conf
-rsync -av hbase_ssh_files/ /home/hbase/.ssh
-chown -R hbase:hadoop /home/hbase/.ssh
-chmod -R 600 /home/hbase/.ssh/*
-chmod 700 /home/hbase/.ssh
+#rsync -av hcfg/ /opt/etu-hadoop/hbase-0.98.1-hadoop2/conf
+#rsync -av hbase_ssh_files/ /home/hbase/.ssh
+#chown -R hbase:hadoop /home/hbase/.ssh
+#chmod -R 600 /home/hbase/.ssh/*
+#chmod 700 /home/hbase/.ssh
 
 su - hdfs -c "hdfs namenode -format"
