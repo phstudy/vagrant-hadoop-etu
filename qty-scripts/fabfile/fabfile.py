@@ -26,7 +26,14 @@ def config_hostname(hostname):
 
 @task
 def base_install():
-    sudo('yum install -y telnet wget')
+    sudo('yum install -y telnet wget nfs-utils')
+
+    sudo('chkconfig rpcbind on')
+    sudo('service rpcbind start')
+
+    sudo('chkconfig nfs on')
+    sudo('service nfs start')
+
     for step in range(1,4):
         put('install_scripts/%d.sh' % step)
         sudo('sh %d.sh' % step)
