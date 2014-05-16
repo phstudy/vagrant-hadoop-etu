@@ -47,12 +47,11 @@ def launch_hdfs():
         import time
         count = 0
         while count == 0:
-            puts('wait for port %d' % port)
             with settings(warn_only=True):
-                count = run('v=$(netstat -an | grep LISTEN | grep -c :%d) ; echo $v' % port)
-            if count != 0:
-                break
-            time.sleep(10)
+                count = int(run('v=$(netstat -an | grep LISTEN | grep -c :%d) ; echo $v' % port))
+            puts('wait for port %d (count: %d)' % (port, count))
+            if count == 0:
+                time.sleep(10)
 
     # wait namenode web-ui, rpc
     wait_for_listen(50070)
@@ -63,8 +62,12 @@ def launch_hdfs():
     wait_for_listen(50020)
     wait_for_listen(50075)
 
+    # init hdfs
+    sudo('su - hdfs -c "hadoop fs -mkdir -p /tmp"')
+    sudo('su - hdfs -c "hadoop fs -chmod 1777 /tmp"')
+    sudo('su - hdfs -c "hadoop fs -mkdir -p /user/hdfs"')
+
     # test hdfs
-    puts('test hdfs put-operation')
     sudo('su - hdfs -c "dd if=/dev/zero of=100mb.img bs=1M count=100"')
     sudo('su - hdfs -c "hadoop fs -rm -f test.img"')
     sudo('su - hdfs -c "hadoop fs -put 100mb.img test.img"')
