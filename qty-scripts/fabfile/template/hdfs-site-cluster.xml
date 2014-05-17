@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <property>
+        <name>dfs.nameservices</name>
+        <value>%(CLUSTER_NAME)s</value>
+    </property>
+
+    <property>
+        <name>dfs.ha.namenodes.%(CLUSTER_NAME)s</name>
+        <value>nn1,nn2</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.rpc-address.%(CLUSTER_NAME)s.nn1</name>
+        <value>%(NAMENODE_1)s:8020</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.rpc-address.%(CLUSTER_NAME)s.nn2</name>
+        <value>%(NAMENODE_2)s:8020</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.http-address.%(CLUSTER_NAME)s.nn1</name>
+        <value>%(NAMENODE_1)s:50070</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.http-address.%(CLUSTER_NAME)s.nn2</name>
+        <value>%(NAMENODE_2)s:50070</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.shared.edits.dir</name>
+        <value>file:///tmp/remote_shared_dir</value>
+    </property>
+
+    <property>
+        <name>dfs.client.failover.proxy.provider.%(CLUSTER_NAME)s</name>
+        <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+    </property>
+
+    <property>
+        <name>dfs.ha.fencing.methods</name>
+        <value>sshfence</value>
+    </property>
+
+    <property>
+        <name>dfs.ha.fencing.ssh.private-key-files</name>
+        <value>/tmp/the_key.pem</value>
+    </property>
+</configuration>

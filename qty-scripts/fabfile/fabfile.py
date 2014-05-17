@@ -2,12 +2,12 @@ from fabric.api import *
 from fabric.utils import *
 from fabric.contrib.files import *
 from server_util import *
+import cfg
 
+site_map = cfg.load_config()
 env.user = 'ec2-user'
-env.roledefs = {
-    'nn1':['ec2-54-254-250-58.ap-southeast-1.compute.amazonaws.com'],
-    'nn2':['ec2-54-255-173-46.ap-southeast-1.compute.amazonaws.com']
-}
+env.roledefs = site_map
+
 
 env.key_filename = 'aws_key.pem'
 
@@ -72,6 +72,15 @@ def launch_hdfs():
     sudo('su - hdfs -c "hadoop fs -rm -f test.img"')
     sudo('su - hdfs -c "hadoop fs -put 100mb.img test.img"')
 
-        
+
+@task
+def change_to_cluster_mode():
+    tpl = open('template/hdfs-site-cluster.xml').read()
+    s = tpl % {'CLUSTER_NAME':'mycluster', 'NAMENODE_1':'nn1', 'NAMENODE_2':'nn2'}
+    print tmp(s)
+
+    tpl = open('template/core-site-cluster.xml').read()
+    s = tpl % {'CLUSTER_NAME':'mycluster', 'NAMENODE_1':'nn1', 'NAMENODE_2':'nn2'}
+    print tmp(s)
     
 
